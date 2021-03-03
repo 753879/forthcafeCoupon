@@ -6,6 +6,7 @@ http localhost:8081/orders
 http localhost:8082/pays
 http localhost:8083/deliveries
 http localhost:8084/myPages
+http localhost:8085/coupons
 
 http localhost:8081/orders ordererName="kim" menuName="americano" menuId=1  price=100 quantity=3 status="Order"
 http localhost:8081/orders ordererName="lee" menuName="latte" menuId=2  price=200 quantity=5 status="Order"
