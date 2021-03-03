@@ -16,6 +16,7 @@ public class MyPage {
     private Double price;
     private Integer quantity;
     private String status;
+    private Integer piece;
 
     public Long getId() {
         return id;
@@ -24,7 +25,27 @@ public class MyPage {
     public void setId(Long id) {
         this.id = id;
     }
-    
+    public String getOrdererName() {
+        return ordererName;
+    }
+
+    public void setOrdererName(String ordererName) {
+        this.ordererName = ordererName;
+    }
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
+    public Long getMenuId() {
+        return menuId;
+    }
+
+    public void setMenuId(Long menuId) {
+        this.menuId = menuId;
+    }
     public Double getPrice() {
         return price;
     }
@@ -46,29 +67,11 @@ public class MyPage {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public String getOrdererName() {
-        return ordererName;
+    public Integer getPiece() {
+        return piece;
     }
 
-    public void setOrdererName(String ordererName) {
-        this.ordererName = ordererName;
+    public void setPiece(Integer piece) {
+        this.piece = piece;
     }
-
-    public String getMenuName() {
-        return menuName;
-    }
-
-    public void setMenuName(String menuName) {
-        this.menuName = menuName;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
-    }
-
 }

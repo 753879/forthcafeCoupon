@@ -37,6 +37,11 @@ logging:
     org.springframework.cloud: debug
 server:
   port: 8083
+
+  # coupon service 호출 주소
+api:
+  url:
+    coupon: http://localhost:8085 
 ---
 
 spring:
@@ -62,3 +67,7 @@ spring:
         event-out:
           destination: forthcafe
           contentType: application/json
+# coupon service 호출 주소
+api:
+  url:
+    coupon: http://Coupon:8080  

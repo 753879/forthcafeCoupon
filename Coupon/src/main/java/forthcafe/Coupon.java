@@ -2,6 +2,8 @@ package forthcafe;
 
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
+
+
 import java.util.List;
 
 @Entity
@@ -24,12 +26,13 @@ public class Coupon {
         CouponSaved couponSaved = new CouponSaved();
         BeanUtils.copyProperties(this, couponSaved);
         couponSaved.publishAfterCommit();
+    }
 
-
+    @PostUpdate
+    public void onPostUpdate(){
         CouponCancelled couponCancelled = new CouponCancelled();
         BeanUtils.copyProperties(this, couponCancelled);
         couponCancelled.publishAfterCommit();
-
 
     }
 

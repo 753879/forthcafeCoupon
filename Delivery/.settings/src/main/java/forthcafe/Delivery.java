@@ -2,6 +2,10 @@ package forthcafe;
 
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
+
+import forthcafe.external.Coupon;
+import forthcafe.external.CouponService;
+
 import java.util.List;
 
 @Entity
@@ -23,7 +27,16 @@ public class Delivery {
     public void onPrePersist(){
         Deliveried deliveried = new Deliveried();
         BeanUtils.copyProperties(this, deliveried);
-        deliveried.publishAfterCommit();
+        deliveried.setStatus("deliveried");
+        // kafka push
+        deliveried..publish();
+
+        // req/res 패턴 처리 
+        Coupon coupon = new Coupon();
+        BeanUtils.copyProperties(this, coupon);
+        // feignclient 호출
+        DeliveryApplication.applicationContext.getBean(CouponService.class).coupon(coupon);
+    }
     }
 
     @PostUpdate
@@ -32,6 +45,7 @@ public class Delivery {
         BeanUtils.copyProperties(this, deliveryCancelled);
         deliveryCancelled.setStatus("deliveryCancelled");
         deliveryCancelled.publishAfterCommit();
+
     }
 
 

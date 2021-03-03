@@ -58,7 +58,7 @@ public class MyPageViewHandler {
                     myPage.setOrdererName(payed.getOrdererName());
                     myPage.setPrice(payed.getPrice());
                     myPage.setQuantity(payed.getQuantity());
-                    myPage.setStatus("payed");
+                    myPage.setStatus("payed");                  
 
                     // view 레파지 토리에 save
                     myPageRepository.save(myPage);

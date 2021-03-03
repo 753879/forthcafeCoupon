@@ -9,6 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableBinding(KafkaProcessor.class)
+// req/res 패턴시 사용
 @EnableFeignClients
 public class DeliveryApplication {
     protected static ApplicationContext applicationContext;
