@@ -72,7 +72,6 @@ public class Coupon {
     private Double price;
     private Integer quantity;
     private String status;
-    private Integer piece;
 
     @PrePersist
     public void onPrePersist(){
@@ -139,26 +138,22 @@ public class Coupon {
     public void setStatus(String status) {
         this.status = status;
     }
-    public Integer getPiece() {
-        return piece;
-    }
-
-    public void setPiece(Integer piece) {
-        this.piece = piece;
-    }
 
 }
 ```
 
-**Pay 서비스의 PolicyHandler.java**
+**Coupon 서비스의 PolicyHandler.java**
 ```java
 package forthcafe;
 
 import forthcafe.config.kafka.KafkaProcessor;
 
 import java.util.List;
-import java.util.Optional;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -168,7 +163,7 @@ import org.springframework.stereotype.Service;
 public class PolicyHandler{
 
     @Autowired
-    PayRepository payRepository;
+    CouponRepository couponRepository;
 
     @StreamListener(KafkaProcessor.INPUT)
     public void onStringEventListener(@Payload String eventString){
@@ -176,31 +171,23 @@ public class PolicyHandler{
     }
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void wheneverOrderCancelled_(@Payload OrderCancelled orderCancelled){
+    public void wheneverDeliveryCancelled_CouponCancel(@Payload DeliveryCancelled deliveryCancelled){
 
-        try {
-            if(orderCancelled.isMe()){
-                System.out.println("##### OrderCancelled listener  : " + orderCancelled.toJson());
-    
-                Optional<Pay> Optional = payRepository.findById(orderCancelled.getId());
-    
-                if( Optional.isPresent()) {
-                    Pay pay = Optional.get();
-    
-                    // 객체에 이벤트의 eventDirectValue 를 set 함
-                    pay.setId(orderCancelled.getId());
-                    pay.setMenuId(orderCancelled.getMenuId());
-                    pay.setMenuName(orderCancelled.getMenuName());
-                    pay.setOrdererName(orderCancelled.getOrdererName());
-                    pay.setPrice(orderCancelled.getPrice());
-                    pay.setQuantity(orderCancelled.getQuantity());
-                    pay.setStatus("payCancelled");
+        if(deliveryCancelled.isMe()){
+            System.out.println("##### listener  : " + deliveryCancelled.toJson());
 
-                    payRepository.save(pay);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            Coupon coupon = new Coupon();
+            coupon.setId(deliveryCancelled.getId());
+            coupon.setMenuId(deliveryCancelled.getMenuId());
+            coupon.setMenuName(deliveryCancelled.getMenuName());
+            coupon.setOrdererName(deliveryCancelled.getOrdererName());
+            coupon.setPrice(deliveryCancelled.getPrice());
+            coupon.setQuantity(deliveryCancelled.getQuantity());
+            coupon.setStatus("CouponCancelled");
+
+            couponRepository.save(coupon);
+
+
         }
     }
 
@@ -209,9 +196,10 @@ public class PolicyHandler{
 
 DDD 적용 후 REST API의 테스트를 통하여 정상적으로 동작하는 것을 확인할 수 있었다.
 
-- 원격 주문 (Order 주문 후 결과)
+- 주문 후 쿠폰 결과
+- 
+![image](https://user-images.githubusercontent.com/78134499/109924305-694d9c80-7d03-11eb-8342-50453b4326f0.png)
 
-![증빙2](https://github.com/bigot93/forthcafe/blob/main/images/order.png)
 
 # GateWay 적용
 API GateWay를 통하여 마이크로 서비스들의 집입점을 통일할 수 있다. 다음과 같이 GateWay를 적용하였다.
@@ -243,6 +231,10 @@ spring:
           uri: http://localhost:8084
           predicates:
             - Path= /myPages/**
+        - id: Coupon
+          uri: http://localhost:8085
+          predicates:
+            - Path=/coupons/** 
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -278,6 +270,10 @@ spring:
           uri: http://MyPage:8080
           predicates:
             - Path= /myPages/**
+        - id: Coupon
+          uri: http://Coupon:8080
+          predicates:
+            - Path=/coupons/** 
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -294,7 +290,7 @@ server:
 ```
 8088 port로 Order서비스 정상 호출
 
-![증빙1](https://github.com/bigot93/forthcafe/blob/main/images/gateway.png)
+![image](https://user-images.githubusercontent.com/78134499/109924486-b3368280-7d03-11eb-811d-aa4304aa6b86.png)
 
 # CQRS/saga/correlation
 Materialized View를 구현하여, 타 마이크로서비스의 데이터 원본에 접근없이(Composite 서비스나 조인SQL 등 없이)도 내 서비스의 화면 구성과 잦은 조회가 가능하게 구현해 두었다. 본 프로젝트에서 View 역할은 MyPages 서비스가 수행한다.
