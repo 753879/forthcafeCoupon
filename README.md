@@ -314,34 +314,35 @@ Materialized View를 구현하여, 타 마이크로서비스의 데이터 원본
 # 폴리글랏
 Order 서비스의 DB와 MyPage의 DB를 다른 DB를 사용하여 폴리글랏을 만족시키고 있다.
 
-**Order의 pom.xml DB 설정 코드**
+**Coupon의 pom.xml DB 설정 코드**
 
-![증빙5](https://github.com/bigot93/forthcafe/blob/main/images/db_conf1.png)
+![image](https://user-images.githubusercontent.com/78134499/109928507-df083700-7d08-11eb-9642-739a58aa4f59.png)
 
 **MyPage의 pom.xml DB 설정 코드**
 
-![증빙6](https://github.com/bigot93/forthcafe/blob/main/images/db_conf2.png)
+![image](https://user-images.githubusercontent.com/78134499/109928546-e7607200-7d08-11eb-81fd-7be2377ee7af.png)
 
 # 동기식 호출 과 Fallback 처리
 
-분석단계에서의 조건 중 하나로 결재(Pay)와 배송(Delivery) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 Rest Repository에 의해 노출되어있는 REST 서비스를 FeignClient를 이용하여 호출하도록 한다.
+분석단계에서의 조건 중 하나로 배송(Delivery)과 쿠폰(Coupon) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 
+호출 프로토콜은 Rest Repository에 의해 노출되어있는 REST 서비스를 FeignClient를 이용하여 호출하도록 한다.
 
-**Pay 서비스 내 external.DeliveryService**
+**Delivery 서비스 내 external.CouponService**
 ```java
 package forthcafe.external;
 
-import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClient; 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Date;
 
-@FeignClient(name="Delivery", url="${api.url.delivery}") 
-public interface DeliveryService {
+@FeignClient(name="Coupon", url="${api.url.coupon}") 
+public interface CouponService {
 
-    @RequestMapping(method = RequestMethod.POST, path = "/deliveries", consumes = "application/json")
-    public void delivery(@RequestBody Delivery delivery);
+    @RequestMapping(method = RequestMethod.POST, path = "/coupons", consumes = "application/json")
+    public void coupon(@RequestBody Coupon coupon);
 
 }
 ```
