@@ -38,7 +38,7 @@ public class PolicyHandler{
             delivery.setOrdererName(payed.getOrdererName());
             delivery.setPrice(payed.getPrice());
             delivery.setQuantity(payed.getQuantity());
-            delivery.setStatus("Delivery");
+            delivery.setStatus("delivery");
             deliveryRepository.save(delivery);
         }
     }

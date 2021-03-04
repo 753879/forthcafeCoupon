@@ -38,10 +38,8 @@ public class PolicyHandler{
             coupon.setPrice(deliveryCancelled.getPrice());
             coupon.setQuantity(deliveryCancelled.getQuantity());
             coupon.setStatus("CouponCancelled");
-            coupon.setPiece(deliveryCancelled.getQuantity());
 
             couponRepository.save(coupon);
-
 
 
         }

@@ -221,7 +221,6 @@ public class MyPageViewHandler {
                     myPage.setOrdererName(couponSaved.getOrdererName());
                     myPage.setPrice(couponSaved.getPrice());
                     myPage.setQuantity(couponSaved.getQuantity());
-                    myPage.setPiece(couponSaved.getPiece());
                     myPage.setStatus("couponSaved");
 
                     // view 레파지 토리에 save
@@ -249,7 +248,6 @@ public class MyPageViewHandler {
                     myPage.setOrdererName(couponCancelled.getOrdererName());
                     myPage.setPrice(couponCancelled.getPrice());
                     myPage.setQuantity(couponCancelled.getQuantity());
-                    myPage.setPiece(couponCancelled.getPiece());
                     myPage.setStatus("couponCancelled");
 
                     // view 레파지 토리에 save

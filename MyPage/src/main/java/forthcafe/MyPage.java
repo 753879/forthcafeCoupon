@@ -16,7 +16,6 @@ public class MyPage {
     private Double price;
     private Integer quantity;
     private String status;
-    private Integer piece;
 
     public Long getId() {
         return id;
@@ -67,11 +66,5 @@ public class MyPage {
     public void setStatus(String status) {
         this.status = status;
     }
-    public Integer getPiece() {
-        return piece;
-    }
 
-    public void setPiece(Integer piece) {
-        this.piece = piece;
-    }
 }

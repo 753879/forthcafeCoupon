@@ -9,7 +9,6 @@ public class CouponSaved extends AbstractEvent {
     private Double price;
     private Integer quantity;
     private String status;
-    private Integer piece;
 
  
     public Long getId() {
@@ -60,13 +59,6 @@ public class CouponSaved extends AbstractEvent {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-    public Integer getPiece() {
-        return piece;
-    }
-
-    public void setPiece(Integer piece) {
-        this.piece = piece;
     }
 
 
