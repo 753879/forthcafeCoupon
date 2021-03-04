@@ -37,7 +37,6 @@ public class Delivery {
         // feignclient 호출
         DeliveryApplication.applicationContext.getBean(CouponService.class).coupon(coupon);
     }
-    }
 
     @PostUpdate
     public void onPostUpdate(){

@@ -1,5 +1,5 @@
 // local build command
-mvn boot-spring:run
+mvn spring-boot:run
 
 ////////// req/res 
 http localhost:8081/orders
@@ -12,6 +12,8 @@ http localhost:8081/orders ordererName="kim" menuName="americano" menuId=1  pric
 http localhost:8081/orders ordererName="lee" menuName="latte" menuId=2  price=200 quantity=5 status="Order"
 http localhost:8081/orders ordererName="park" menuName="greentee" menuId=3  price=150 quantity=2 status="Order"
 
+http localhost:8085/coupons ordererName="park" menuName="greentee" menuId=3  price=150 quantity=2 status="Order" piece=3
+
 // 부하 테스트
 siege -c2 -t10S  -v --content-type "application/json" 'http://localhost:8081/orders POST {"memuId":2, "quantity":1}'
 
@@ -22,8 +24,8 @@ git init                   ////// 로컬 초기화 git clone 시에는 필요없
 git clone GITHUB주소       ////// 해당 주소에서 소스 내려 받음
 git pull                   ////// github -> local 소스 업데이트
 git add . 
-git commit -m "first commit"
-git remote add origin https://github.com/bigot93/forthcafe.git
+git commit -m "Coupon commit"
+git remote add origin https://github.com/753879/forthcafeCoupon.git
 git branch -M main //// 브랜치 변경
 git push -u origin main
 bigot93/!~~~~~~~0 (github id / github pw)
@@ -48,9 +50,11 @@ http localhost:8081/orders
 http localhost:8082/pays
 http localhost:8083/deliveries
 http localhost:8084/myPages
+http localhost:8085/coupons
 
 /////// 2번주문 삭제
 http DELETE http://localhost:8081/orders/2
+http DELETE http://localhost:8085/coupons/1
 
 
 //////// config map 설정
