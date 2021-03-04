@@ -29,7 +29,7 @@ public class Delivery {
         BeanUtils.copyProperties(this, deliveried);
         deliveried.setStatus("deliveried");
         // kafka push
-        deliveried..publish();
+        deliveried.publish();
 
         // req/res 패턴 처리 
         Coupon coupon = new Coupon();
