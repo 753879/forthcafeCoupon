@@ -10,8 +10,8 @@
 1. 트랜젝션
    1. 주문내역이 배송되면 쿠폰을 저장한다. → Sync 호출
 2. 장애격리
-   1. 쿠폰에서 장애가 발송해도 주문취소/배송취소는 24시간 받을 수 있어야 한다 → Async(event-driven), Eventual Consistency
-   1. 결재가 과중되면 결재를 잠시 후에 하도록 유도한다 → Circuit breaker, fallback
+   1. 쿠폰에서 장애가 발송해도 주문취소는 24시간 받을 수 있어야 한다 → Async(event-driven), Eventual Consistency
+   1. 쿠폰서비스가 과중되면 쿠폰저장g 잠시 후에 하도록 유도한다 → Circuit breaker, fallback
 3. 성능
    1. 고객이 쿠폰내역을 화면에서 확인할 수 있어야 한다 → CQRS
 
@@ -46,7 +46,6 @@ mvn spring-boot:run
 
 ## DDD 의 적용
 msaez.io를 통해 구현한 Aggregate 단위로 Entity를 선언 후, 구현을 진행하였다.
-
 Entity Pattern과 Repository Pattern을 적용하기 위해 Spring Data REST의 RestRepository를 적용하였다.
 
 **Coupon 서비스의 Coupon.java**
@@ -197,7 +196,6 @@ public class PolicyHandler{
 DDD 적용 후 REST API의 테스트를 통하여 정상적으로 동작하는 것을 확인할 수 있었다.
 
 - 주문 후 쿠폰 결과
-- 
 ![image](https://user-images.githubusercontent.com/78134499/109924305-694d9c80-7d03-11eb-8342-50453b4326f0.png)
 
 
@@ -288,12 +286,15 @@ spring:
 server:
   port: 8080
 ```
+
 8088 port로 Order서비스 정상 호출
 
 ![image](https://user-images.githubusercontent.com/78134499/109924486-b3368280-7d03-11eb-811d-aa4304aa6b86.png)
 
 # CQRS/saga/correlation
-Materialized View를 구현하여, 타 마이크로서비스의 데이터 원본에 접근없이(Composite 서비스나 조인SQL 등 없이)도 내 서비스의 화면 구성과 잦은 조회가 가능하게 구현해 두었다. 본 프로젝트에서 View 역할은 MyPages 서비스가 수행한다.
+
+Materialized View를 구현하여, 타 마이크로서비스의 데이터 원본에 접근없이(Composite 서비스나 조인SQL 등 없이)도 내 서비스의 화면 구성과 잦은 조회가 가능하게 구현해 두었다. 
+본 프로젝트에서 View 역할은 MyPages 서비스가 수행한다.
 
 주문(ordered) 실행 후 MyPages 화면
 
