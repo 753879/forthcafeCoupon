@@ -8,7 +8,7 @@
 
 ### 비기능적 요구사항
 1. 트랜젝션
-   1. 주무내역이 배송되면 쿠폰을 저장한다. → Sync 호출
+   1. 주문내역이 배송되면 쿠폰을 저장한다. → Sync 호출
 2. 장애격리
    1. 쿠폰에서 장애가 발송해도 주문취소/배송취소는 24시간 받을 수 있어야 한다 → Async(event-driven), Eventual Consistency
    1. 결재가 과중되면 결재를 잠시 후에 하도록 유도한다 → Circuit breaker, fallback
