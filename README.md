@@ -49,19 +49,19 @@ msaez.io를 통해 구현한 Aggregate 단위로 Entity를 선언 후, 구현을
 
 Entity Pattern과 Repository Pattern을 적용하기 위해 Spring Data REST의 RestRepository를 적용하였다.
 
-**Order 서비스의 Order.java**
+**Coupon 서비스의 Coupon.java**
 ```java 
 package forthcafe;
 
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
 
-import forthcafe.external.Pay;
-import forthcafe.external.PayService;
+
+import java.util.List;
 
 @Entity
-@Table(name="Order_table")
-public class Order {
+@Table(name="Coupon_table")
+public class Coupon {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -72,27 +72,21 @@ public class Order {
     private Double price;
     private Integer quantity;
     private String status;
+    private Integer piece;
 
-    @PostPersist
-    public void onPostPersist(){
-        Ordered ordered = new Ordered();
-        BeanUtils.copyProperties(this, ordered);
-        ordered.setStatus("Order");
-        
-        ordered.publish();
-
-        Pay pay = new Pay();
-        BeanUtils.copyProperties(this, pay);
-        
-        OrderApplication.applicationContext.getBean(PayService.class).pay(pay);
+    @PrePersist
+    public void onPrePersist(){
+        CouponSaved couponSaved = new CouponSaved();
+        BeanUtils.copyProperties(this, couponSaved);
+        couponSaved.publishAfterCommit();
     }
-    
-    @PreRemove
-    public void onPreRemove(){
-        OrderCancelled orderCancelled = new OrderCancelled();
-        BeanUtils.copyProperties(this, orderCancelled);
 
-        orderCancelled.publishAfterCommit();
+    @PostUpdate
+    public void onPostUpdate(){
+        CouponCancelled couponCancelled = new CouponCancelled();
+        BeanUtils.copyProperties(this, couponCancelled);
+        couponCancelled.publishAfterCommit();
+
     }
 
 
@@ -102,6 +96,27 @@ public class Order {
 
     public void setId(Long id) {
         this.id = id;
+    }
+    public String getOrdererName() {
+        return ordererName;
+    }
+
+    public void setOrdererName(String ordererName) {
+        this.ordererName = ordererName;
+    }
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
+    public Long getMenuId() {
+        return menuId;
+    }
+
+    public void setMenuId(Long menuId) {
+        this.menuId = menuId;
     }
     public Double getPrice() {
         return price;
@@ -124,30 +139,14 @@ public class Order {
     public void setStatus(String status) {
         this.status = status;
     }
-
-    public String getOrdererName() {
-        return ordererName;
+    public Integer getPiece() {
+        return piece;
     }
 
-    public void setOrdererName(String ordererName) {
-        this.ordererName = ordererName;
+    public void setPiece(Integer piece) {
+        this.piece = piece;
     }
 
-    public String getMenuName() {
-        return menuName;
-    }
-
-    public void setMenuName(String menuName) {
-        this.menuName = menuName;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
-    }
 }
 ```
 
