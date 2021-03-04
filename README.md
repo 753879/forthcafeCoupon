@@ -365,6 +365,7 @@ Delivery 서비스에 정상 요청이 됨
 ![image](https://user-images.githubusercontent.com/78134499/109933712-137ef180-7d0f-11eb-94bd-0621692435e9.png)
 
 Fallback 설정
+
 ![image](https://user-images.githubusercontent.com/78134499/109938754-bb96b980-7d13-11eb-8be6-842fca180a84.png)
 
 Fallback 결과(Pay service 종료 후 Order 추가 시) -----확인필요
