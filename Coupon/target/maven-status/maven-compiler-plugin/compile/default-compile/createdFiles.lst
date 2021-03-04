@@ -2,8 +2,8 @@ forthcafe/CouponSaved.class
 forthcafe/DeliveryCancelled.class
 forthcafe/CouponController.class
 forthcafe/CouponApplication.class
-forthcafe/AbstractEvent.class
 forthcafe/config/kafka/KafkaProcessor.class
+forthcafe/AbstractEvent.class
 forthcafe/AbstractEvent$1.class
 forthcafe/Coupon.class
 forthcafe/CouponRepository.class

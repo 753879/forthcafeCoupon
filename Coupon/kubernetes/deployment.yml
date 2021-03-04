@@ -1,24 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: Coupon
+  name: coupon
   labels:
-    app: Coupon
+    app: coupon
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: Coupon
+      app: coupon
   template:
     metadata:
       labels:
-        app: Coupon
+        app: coupon
     spec:
       containers:
-        - name: Coupon
-          image: username/Coupon:latest
+        - name: coupon
+          image: skuser03.azurecr.io/coupon:v1
           ports:
             - containerPort: 8080
+          # autoscale start
+          resources:
+              limits:
+                cpu: 500m
+              requests:
+                cpu: 200m
+          # autoscale end
+          ### config map start
+          #env:
+          #  - name: SYS_MODE
+          #    valueFrom:
+          #      configMapKeyRef:
+          #        name: systemmode
+          #        key: sysmode
+          ### config map end   
           readinessProbe:
             httpGet:
               path: '/actuator/health'
