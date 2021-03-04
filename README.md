@@ -441,7 +441,7 @@ kubectl get configmap systemmode -o yaml
 
 * order 1건 추가후 로그 확인
 ```
-kubectl logs {pod ID}
+kubectl logs {pod ID} --확인필요
 ```
 ![image](https://user-images.githubusercontent.com/5147735/109760887-dc3b1280-7c32-11eb-8284-f4544d7b72b0.png)
 
@@ -476,7 +476,7 @@ mvn package
 ```
 cd .. 
 cd Order
-az acr build --registry skuser03 --image skuser03.azurecr.io/order:v2 .
+az acr build --registry skuser03 --image skuser03.azurecr.io/order:v1 .
 kubectl apply -f kubernetes/deployment.yml 
 kubectl expose deploy order --type=ClusterIP --port=8080
 
@@ -566,16 +566,16 @@ kubectl logs {pod명}
 4. liveness 설정 (self-healing)
 5. resource 설정 (autoscaling)
 ```
+![image](https://user-images.githubusercontent.com/78134499/109967620-fd842780-7d34-11eb-9e26-0d7e97464f9f.png)
 
-![image](https://user-images.githubusercontent.com/5147735/109643506-a8f77580-7b97-11eb-926b-e6c922aa2d1b.png)
 
 ## 서킷 브레이킹
 * 서킷 브레이킹 프레임워크의 선택: Spring FeignClient + Hystrix 옵션을 사용하여 구현함
-* Order -> Pay 와의 Req/Res 연결에서 요청이 과도한 경우 CirCuit Breaker 통한 격리
+* Delivery -> Coupon 와의 Req/Res 연결에서 요청이 과도한 경우 CirCuit Breaker 통한 격리
 * Hystrix 를 설정: 요청처리 쓰레드에서 처리시간이 610 밀리가 넘어서기 시작하여 어느정도 유지되면 CB 회로가 닫히도록 (요청을 빠르게 실패처리, 차단) 설정
 
 ```
-// Order서비스 application.yml
+// Delivery서비스 application.yml
 
 feign:
   hystrix:
@@ -589,20 +589,22 @@ hystrix:
 
 
 ```
-// Pay 서비스 Pay.java
+// Coupon 서비스 Coupon.java
 
- @PostPersist
-    public void onPostPersist(){
-        Payed payed = new Payed();
-        BeanUtils.copyProperties(this, payed);
-        payed.setStatus("Pay");
-        payed.publishAfterCommit();
+    @PrePersist
+    public void onPrePersist(){
+        CouponSaved couponSaved = new CouponSaved();
+        BeanUtils.copyProperties(this, couponSaved);
+        couponSaved.publishAfterCommit();
 
+                // delay test시 주석해제
         try {
-                 Thread.currentThread().sleep((long) (400 + Math.random() * 220));
-         } catch (InterruptedException e) {
-                 e.printStackTrace();
-         }
+                Thread.currentThread().sleep((long) (400 + Math.random() * 220));
+        } catch (InterruptedException e) {
+                e.printStackTrace();
+        }
+
+    }
 ```
 
 * /home/project/team/forthcafe/yaml/siege.yaml
@@ -619,24 +621,24 @@ spec:
 
 * siege pod 생성
 ```
-/home/project/team/forthcafe/yaml/kubectl apply -f siege.yaml
+cd /home/project/personal/forthcafeCoupon/yaml
+kubectl apply -f siege.yaml
 ```
 
-* 부하테스터 siege 툴을 통한 서킷 브레이커 동작 확인: 동시사용자 100명 60초 동안 실시
+* 부하테스터 siege 툴을 통한 서킷 브레이커 동작 확인: 동시사용자 40명 30초 동안 실시
 ```
 kubectl exec -it pod/siege -c siege -- /bin/bash
-siege -c100 -t60S  -v --content-type "application/json" 'http://{EXTERNAL-IP}:8080/orders POST {"memuId":2, "quantity":1}'
-siege -c100 -t30S  -v --content-type "application/json" 'http://52.141.61.164:8080/orders POST {"memuId":2, "quantity":1}'
+siege -c40 -t30S  -v --content-type "application/json" 'http://52.231.74.4:8080/deliveries POST {"memuId":2, "quantity":1}'
+
 ```
-![image](https://user-images.githubusercontent.com/5147735/109762408-dd207400-7c33-11eb-8464-325d781867ae.png)
-![image](https://user-images.githubusercontent.com/5147735/109762376-d1cd4880-7c33-11eb-87fb-b739aa2d6621.png)
+![image](https://user-images.githubusercontent.com/78134499/109973561-e432a980-7d3b-11eb-8d39-a1a8d2e30af9.png)
 
 
 
 ## 오토스케일 아웃
 * 앞서 서킷 브레이커(CB) 는 시스템을 안정되게 운영할 수 있게 해줬지만 사용자의 요청을 100% 받아들여주지 못했기 때문에 이에 대한 보완책으로 자동화된 확장 기능을 적용하고자 한다.
 
-* order 서비스 deployment.yml 설정
+* delivery 서비스 deployment.yml 설정
 ```
  resources:
             limits:
