@@ -297,7 +297,7 @@ Materialized View를 구현하여, 타 마이크로서비스의 데이터 원본
 
 주문(ordered) 실행 후 MyPages 화면
 
-![image](https://user-images.githubusercontent.com/78134499/109927413-884e2d80-7d07-11eb-8e83-c022a900d309.png)
+![image](https://user-images.githubusercontent.com/78134499/109927702-f397ff80-7d07-11eb-824e-54c877c0101d.png)
 
 주문(OrderCancelled) 취소 후 MyPages 화면
 
