@@ -1,5 +1,5 @@
 // local build command
-mvn boot-spring:run
+mvn spring-boot:run
 
 ////////// req/res 
 http localhost:8081/orders
@@ -11,6 +11,8 @@ http localhost:8085/coupons
 http localhost:8081/orders ordererName="kim" menuName="americano" menuId=1  price=100 quantity=3 status="Order"
 http localhost:8081/orders ordererName="lee" menuName="latte" menuId=2  price=200 quantity=5 status="Order"
 http localhost:8081/orders ordererName="park" menuName="greentee" menuId=3  price=150 quantity=2 status="Order"
+
+http localhost:8085/coupons ordererName="park" menuName="greentee" menuId=3  price=150 quantity=2 status="Order" piece=3
 
 // 부하 테스트
 siege -c2 -t10S  -v --content-type "application/json" 'http://localhost:8081/orders POST {"memuId":2, "quantity":1}'
@@ -48,9 +50,11 @@ http localhost:8081/orders
 http localhost:8082/pays
 http localhost:8083/deliveries
 http localhost:8084/myPages
+http localhost:8085/coupons
 
 /////// 2번주문 삭제
 http DELETE http://localhost:8081/orders/2
+http DELETE http://localhost:8085/coupons/1
 
 
 //////// config map 설정
