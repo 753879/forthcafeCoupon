@@ -628,17 +628,16 @@ kubectl apply -f siege.yaml
 * 부하테스터 siege 툴을 통한 서킷 브레이커 동작 확인: 동시사용자 40명 30초 동안 실시
 ```
 kubectl exec -it pod/siege -c siege -- /bin/bash
-siege -c40 -t30S  -v --content-type "application/json" 'http://52.231.74.4:8080/deliveries POST {"memuId":2, "quantity":1}'
-
+siege -c40 -t30S  -v --content-type "application/json" 'http://52.231.74.4:8080/coupons POST {"memuId":2, "quantity":1}'
+siege -c40 -t10S  -v --content-type "application/json" 'http://Delivery:8080 POST {"memuId":2, "quantity":1}'  -- 안됨
 ```
 ![image](https://user-images.githubusercontent.com/78134499/109973561-e432a980-7d3b-11eb-8d39-a1a8d2e30af9.png)
-
 
 
 ## 오토스케일 아웃
 * 앞서 서킷 브레이커(CB) 는 시스템을 안정되게 운영할 수 있게 해줬지만 사용자의 요청을 100% 받아들여주지 못했기 때문에 이에 대한 보완책으로 자동화된 확장 기능을 적용하고자 한다.
 
-* delivery 서비스 deployment.yml 설정
+* coupon 서비스 deployment.yml 설정
 ```
  resources:
             limits:
@@ -648,16 +647,16 @@ siege -c40 -t30S  -v --content-type "application/json" 'http://52.231.74.4:8080/
 ```
 * 다시 배포해준다.
 ```
-/home/project/team/forthcafe/Order/mvn package
-az acr build --registry skteam01 --image skteam01.azurecr.io/order:v1 .
+/home/project/team/forthcafe/Coupon/mvn package
+az acr build --registry skuser03 --image skuser03.azurecr.io/coupon:v1 .
 kubectl apply -f kubernetes/deployment.yml 
-kubectl expose deploy order --type=ClusterIP --port=8080
+kubectl expose deploy coupon --type=ClusterIP --port=8080
 ```
 
 * Order 서비스에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 CPU 사용량이 15프로를 넘어서면 replica 를 10개까지 늘려준다
 
 ```
-kubectl autoscale deploy order --min=1 --max=10 --cpu-percent=15
+kubectl autoscale deploy coupon --min=1 --max=5 --cpu-percent=15
 ```
 
 * /home/project/team/forthcafe/yaml/siege.yaml
@@ -681,18 +680,20 @@ spec:
 ```
 kubectl exec -it pod/siege -c siege -- /bin/bash
 siege -c1000 -t60S  -v --content-type "application/json" 'http://{EXTERNAL-IP}:8080/orders POST {"memuId":2, "quantity":1}'
-siege -c1000 -t60S  -v --content-type "application/json" 'http://52.141.61.164:8080/orders POST {"memuId":2, "quantity":1}'
+siege -c300 -t60S  -v --content-type "application/json" 'http://52.231.74.4:8080/coupons POST {"memuId":2, "quantity":1}'
 ```
 
 * 오토스케일이 어떻게 되고 있는지 모니터링을 걸어둔다
 ```
-kubectl get deploy order -w
+kubectl get deploy coupon -w
 ```
-![image](https://user-images.githubusercontent.com/5147735/109771563-4c9c6080-7c40-11eb-9bf8-1efef17bedee.png)
+![image](https://user-images.githubusercontent.com/78134499/109976833-8b651000-7d3f-11eb-8212-d123912cf6f1.png)
+
 ```
 kubectl get pod
 ```
-![image](https://user-images.githubusercontent.com/5147735/109771259-f3ccc800-7c3f-11eb-8ebe-9ff4ab9c2242.png)
+![image](https://user-images.githubusercontent.com/78134499/109976858-90c25a80-7d3f-11eb-8267-eabbd70227f3.png)
+
 
 
 
