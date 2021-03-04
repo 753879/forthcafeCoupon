@@ -435,7 +435,9 @@ env:
 kubectl create configmap systemmode --from-literal=sysmode=PRODUCT
 kubectl get configmap systemmode -o yaml
 ```
-![image](https://user-images.githubusercontent.com/5147735/109768817-bb77ba80-7c3c-11eb-8856-7fca5213f5b1.png)
+
+![image](https://user-images.githubusercontent.com/78134499/109965068-cfe9af00-7d31-11eb-841a-6cf4317ce8c6.png)
+
 
 * order 1건 추가후 로그 확인
 ```
@@ -474,7 +476,7 @@ mvn package
 ```
 cd .. 
 cd Order
-az acr build --registry skuser03 --image skuser03.azurecr.io/order:v1 .
+az acr build --registry skuser03 --image skuser03.azurecr.io/order:v2 .
 kubectl apply -f kubernetes/deployment.yml 
 kubectl expose deploy order --type=ClusterIP --port=8080
 
@@ -490,10 +492,16 @@ az acr build --registry skuser03 --image skuser03.azurecr.io/delivery:v1 .
 kubectl apply -f kubernetes/deployment.yml 
 kubectl expose deploy delivery --type=ClusterIP --port=8080
 
+cd .. 
+cd Coupon
+az acr build --registry skuser03 --image skuser03.azurecr.io/coupon:v2 .
+kubectl apply -f kubernetes/deployment.yml 
+kubectl expose deploy coupon --type=ClusterIP --port=8080
+
 
 cd .. 
 cd MyPage
-az acr build --registry skuser03 --image skteam01.azurecr.io/mypage:v1 .
+az acr build --registry skuser03 --image skuser03.azurecr.io/mypage:v1 .
 kubectl apply -f kubernetes/deployment.yml 
 kubectl expose deploy mypage --type=ClusterIP --port=8080
 
@@ -526,11 +534,16 @@ az acr build --registry skuser03 --image skuser03.azurecr.io/delivery:v1 .
 kubectl create deploy delivery --image=skuser03.azurecr.io/delivery:v1
 kubectl expose deploy delivery --type=ClusterIP --port=8080
 
+cd .. 
+cd Coupon
+az acr build --registry skuser03 --image skuser03.azurecr.io/coupon:v1 .
+kubectl create deploy mypage --image=skuser03.azurecr.io/coupon:v1
+kubectl expose deploy mypage --type=ClusterIP --port=8080
 
 cd .. 
 cd gateway
-az acr build --registry skteam01 --image skteam01.azurecr.io/gateway:v1 .
-kubectl create deploy gateway --image=skteam01.azurecr.io/gateway:v1
+az acr build --registry skuser03 --image skuser03.azurecr.io/gateway:v1 .
+kubectl create deploy gateway --image=skuser03.azurecr.io/gateway:v1
 kubectl expose deploy gateway --type=LoadBalancer --port=8080
 
 cd .. 
@@ -542,8 +555,8 @@ kubectl expose deploy mypage --type=ClusterIP --port=8080
 kubectl logs {pod명}
 ```
 * Service, Pod, Deploy 상태 확인
-![image](https://user-images.githubusercontent.com/5147735/109769165-2de89a80-7c3d-11eb-8472-2281468fb771.png)
 
+![image](https://user-images.githubusercontent.com/78134499/109949528-cf93e880-7d1e-11eb-8068-b75dd4e53c42.png)
 
 * deployment.yml  참고
 ```
