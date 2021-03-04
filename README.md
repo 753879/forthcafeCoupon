@@ -297,12 +297,11 @@ Materialized View를 구현하여, 타 마이크로서비스의 데이터 원본
 
 주문(ordered) 실행 후 MyPages 화면
 
-![image](https://user-images.githubusercontent.com/78134499/109926691-9485bb00-7d06-11eb-9512-e33cfb098b6d.png)
+![image](https://user-images.githubusercontent.com/78134499/109927413-884e2d80-7d07-11eb-8e83-c022a900d309.png)
 
 주문(OrderCancelled) 취소 후 MyPages 화면
 
 ![image](https://user-images.githubusercontent.com/78134499/109926958-e7f80900-7d06-11eb-852d-272e2df73ec1.png)
-
 
 위와 같이 주문을 하게되면 Order > Pay > Delivery > Coupon > MyPage로 주문이 Assigned 되고
 
