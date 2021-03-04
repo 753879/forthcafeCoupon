@@ -297,15 +297,16 @@ Materialized View를 구현하여, 타 마이크로서비스의 데이터 원본
 
 주문(ordered) 실행 후 MyPages 화면
 
-![증빙3](https://github.com/bigot93/forthcafe/blob/main/images/order_pages.png)
+![image](https://user-images.githubusercontent.com/78134499/109926691-9485bb00-7d06-11eb-9512-e33cfb098b6d.png)
 
 주문(OrderCancelled) 취소 후 MyPages 화면
 
-![증빙4](https://github.com/bigot93/forthcafe/blob/main/images/cancel_pages.png)
+![image](https://user-images.githubusercontent.com/78134499/109926958-e7f80900-7d06-11eb-852d-272e2df73ec1.png)
 
-위와 같이 주문을 하게되면 Order > Pay > Delivery > MyPage로 주문이 Assigned 되고
 
-주문 취소가 되면 Status가 deliveryCancelled로 Update 되는 것을 볼 수 있다.
+위와 같이 주문을 하게되면 Order > Pay > Delivery > Coupon > MyPage로 주문이 Assigned 되고
+
+주문 취소가 되면 Status가 couponCancelled로 Update 되는 것을 볼 수 있다.
 
 또한 Correlation을 Key를 활용하여 Id를 Key값을 하고 원하는 주문하고 서비스간의 공유가 이루어 졌다.
 
