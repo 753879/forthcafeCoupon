@@ -196,6 +196,7 @@ public class PolicyHandler{
 DDD 적용 후 REST API의 테스트를 통하여 정상적으로 동작하는 것을 확인할 수 있었다.
 
 - 주문 후 쿠폰 결과
+
 ![image](https://user-images.githubusercontent.com/78134499/109924305-694d9c80-7d03-11eb-8342-50453b4326f0.png)
 
 
