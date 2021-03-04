@@ -58,4 +58,12 @@ public class PolicyHandler{
         }
     }
 
+        @StreamListener(KafkaProcessor.INPUT)
+    public void wheneverCouponCancelled_(@Payload CouponCancelled couponCancelled){
+
+        if(couponCancelled.isMe()){
+            System.out.println("##### listener  : " + couponCancelled.toJson());
+        }
+    }
+
 }

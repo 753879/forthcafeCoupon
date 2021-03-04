@@ -203,4 +203,72 @@ public class MyPageViewHandler {
             e.printStackTrace();
         }
     }
+
+
+    @StreamListener(KafkaProcessor.INPUT)
+    public void whenPayed_then_UPDATE_7(@Payload CouponSaved couponSaved) {
+        try {
+            if (couponSaved.isMe()) {
+                // view 객체 조회
+                Optional<MyPage> Optional = myPageRepository.findById(couponSaved.getId());
+                if( Optional.isPresent()) {
+                    MyPage myPage = Optional.get();
+                    
+                    // view 객체에 이벤트의 eventDirectValue 를 set 함
+                    myPage.setId(couponSaved.getId());
+                    myPage.setMenuId(couponSaved.getMenuId());
+                    myPage.setMenuName(couponSaved.getMenuName());
+                    myPage.setOrdererName(couponSaved.getOrdererName());
+                    myPage.setPrice(couponSaved.getPrice());
+                    myPage.setQuantity(couponSaved.getQuantity());
+                    myPage.setPiece(couponSaved.getPiece());
+                    myPage.setStatus("couponSaved");
+
+                    // view 레파지 토리에 save
+                    myPageRepository.save(myPage);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @StreamListener(KafkaProcessor.INPUT)
+    public void whenPayed_then_UPDATE_8(@Payload CouponCancelled couponCancelled) {
+        try {
+            if (couponCancelled.isMe()) {
+                // view 객체 조회
+                Optional<MyPage> Optional = myPageRepository.findById(couponCancelled.getId());
+                if( Optional.isPresent()) {
+                    MyPage myPage = Optional.get();
+                    
+                    // view 객체에 이벤트의 eventDirectValue 를 set 함
+                    myPage.setId(couponCancelled.getId());
+                    myPage.setMenuId(couponCancelled.getMenuId());
+                    myPage.setMenuName(couponCancelled.getMenuName());
+                    myPage.setOrdererName(couponCancelled.getOrdererName());
+                    myPage.setPrice(couponCancelled.getPrice());
+                    myPage.setQuantity(couponCancelled.getQuantity());
+                    myPage.setPiece(couponCancelled.getPiece());
+                    myPage.setStatus("couponCancelled");
+
+                    // view 레파지 토리에 save
+                    myPageRepository.save(myPage);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
 }
