@@ -349,17 +349,20 @@ public interface CouponService {
 
 **동작 확인**
 
-잠시 Delivery 서비스 중지
-![증빙7](https://github.com/bigot93/forthcafe/blob/main/images/%EB%8F%99%EA%B8%B0%ED%99%941.png)
+잠시 Coupon 서비스 중지
+![image](https://user-images.githubusercontent.com/78134499/109933539-dfa3cc00-7d0e-11eb-813c-f9dd900597e2.png)
 
-주문 취소 요청시 Pay 서비스 변화 없음
-![증빙8](https://github.com/bigot93/forthcafe/blob/main/images/%EB%8F%99%EA%B8%B0%ED%99%942.png)
+주문 요청
+![image](https://user-images.githubusercontent.com/78134499/109933598-f4805f80-7d0e-11eb-8e44-05bf36d4175d.png)
 
-Delivery 서비스 재기동 후 주문취소
-![증빙9](https://github.com/bigot93/forthcafe/blob/main/images/%EB%8F%99%EA%B8%B0%ED%99%943.png)
+Delivery 서비스 변화 없음
+![image](https://user-images.githubusercontent.com/78134499/109933647-019d4e80-7d0f-11eb-8711-33c8a34b9cc2.png)
 
-Pay 서비스 상태를 보면 2번 주문 정상 취소 처리됨
-![증빙9](https://github.com/bigot93/forthcafe/blob/main/images/%EB%8F%99%EA%B8%B0%ED%99%944.png)
+Delivery 서비스 재기동 
+![image](https://user-images.githubusercontent.com/78134499/109933669-0a8e2000-7d0f-11eb-9425-bdd6f7d258f5.png)
+
+Delivery 서비스에 정상 요청이 됨
+![image](https://user-images.githubusercontent.com/78134499/109933712-137ef180-7d0f-11eb-94bd-0621692435e9.png)
 
 Fallback 설정
 ![image](https://user-images.githubusercontent.com/5147735/109755775-f9b7ae80-7c29-11eb-8add-bdb295dc94e1.png)
