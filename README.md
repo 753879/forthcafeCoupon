@@ -340,11 +340,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Date;
 
-@FeignClient(name="Coupon", url="${api.url.coupon}") 
+@FeignClient(name="Coupon", url="${api.url.coupon}", fallback = CouponServiceImpl.class)
 public interface CouponService {
 
     @RequestMapping(method = RequestMethod.POST, path = "/coupons", consumes = "application/json")
     public void coupon(@RequestBody Coupon coupon);
+
+}
+
+package forthcafe.external;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class CouponServiceImpl implements CouponService {
+
+    // fallback message
+    @Override
+    public void coupon(Coupon coupon) {
+        System.out.println("!!!!!!!!!!!!!!!!!!!!! Coupon service is BUSY !!!!!!!!!!!!!!!!!!!!!");
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!   Try again later   !!!!!!!!!!!!!!!!!!!!!");
+    }
 
 }
 ```
