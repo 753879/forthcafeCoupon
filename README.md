@@ -768,6 +768,10 @@ spec:
       initialDelaySeconds: 5
       periodSeconds: 5
 ```
+![image](https://user-images.githubusercontent.com/78134499/110059339-5ee4de80-7da7-11eb-8a1f-ad9e706f35b1.png)
+
+* coupon pod에 적용 시 retry발생 확인
+
 ![image](https://user-images.githubusercontent.com/78134499/110053368-9f8b2a80-7d9c-11eb-857a-dfce417111b2.png)
 
 
