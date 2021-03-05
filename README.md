@@ -342,27 +342,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Date;
 
-@FeignClient(name="Coupon", url="${api.url.coupon}", fallback = CouponServiceImpl.class)
+@FeignClient(name="Coupon", url="${api.url.coupon}")
 public interface CouponService {
 
     @RequestMapping(method = RequestMethod.POST, path = "/coupons", consumes = "application/json")
     public void coupon(@RequestBody Coupon coupon);
-
-}
-
-package forthcafe.external;
-
-import org.springframework.stereotype.Service;
-
-@Service
-public class CouponServiceImpl implements CouponService {
-
-    // fallback message
-    @Override
-    public void coupon(Coupon coupon) {
-        System.out.println("!!!!!!!!!!!!!!!!!!!!! Coupon service is BUSY !!!!!!!!!!!!!!!!!!!!!");
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!   Try again later   !!!!!!!!!!!!!!!!!!!!!");
-    }
 
 }
 ```
@@ -388,8 +372,6 @@ Fallback 설정
 
 ![image](https://user-images.githubusercontent.com/78134499/109938754-bb96b980-7d13-11eb-8be6-842fca180a84.png)
 
-Fallback 결과(Pay service 종료 후 Order 추가 시) -----확인필요
-![image](https://user-images.githubusercontent.com/5147735/109755716-dab91c80-7c29-11eb-9099-ba585115a2a6.png)
 
 # 운영
 
@@ -657,7 +639,7 @@ cd /home/project/personal/forthcafeCoupon/yaml
 kubectl apply -f siege.yaml
 ```
 
-* 부하테스터 siege 툴을 통한 서킷 브레이커 동작 확인: 동시사용자 40명 30초 동안 실시
+* 부하테스터 siege 툴을 통한 서킷 브레이커 동작 확인: 동시사용자 30명 20초 동안 실시
 ```
 kubectl exec -it pod/siege -c siege -- /bin/bash
 siege -c30 -t20S  -v --content-type "application/json" 'http://Delivery:8080/deliveries POST {"memuId":2, "quantity":1}'
@@ -707,7 +689,7 @@ spec:
 /home/project/team/forthcafe/yaml/kubectl apply -f siege.yaml
 ```
 
-* siege를 활용해서 워크로드를 1000명, 1분간 걸어준다. (Cloud 내 siege pod에서 부하줄 것)
+* siege를 활용해서 워크로드를 300명, 1분간 걸어준다. (Cloud 내 siege pod에서 부하줄 것)
 ```
 kubectl exec -it pod/siege -c siege -- /bin/bash
 siege -c300 -t60S  -v --content-type "application/json" 'http://10.0.118.176:8080/coupons POST {"memuId":2, "quantity":1}'
