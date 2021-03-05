@@ -606,9 +606,9 @@ kubectl logs {pod명}
 * Delivery -> Coupon 와의 Req/Res 연결에서 요청이 과도한 경우 CirCuit Breaker 통한 격리
 * Hystrix 를 설정: 요청처리 쓰레드에서 처리시간이 610 밀리가 넘어서기 시작하여 어느정도 유지되면 CB 회로가 닫히도록 (요청을 빠르게 실패처리, 차단) 설정
 
-```
-// Coupon application.yml
 
+Delivery application.yml
+```
 feign:
   hystrix:
     enabled: true
@@ -619,17 +619,15 @@ hystrix:
       execution.isolation.thread.timeoutInMilliseconds: 610
 ```
 
+Coupon 서비스 Coupon.java
 
 ```
-// Coupon 서비스 Coupon.java
-
     @PrePersist
     public void onPrePersist(){
         CouponSaved couponSaved = new CouponSaved();
         BeanUtils.copyProperties(this, couponSaved);
         couponSaved.publishAfterCommit();
 
-                // delay test시 주석해제
         try {
                 Thread.currentThread().sleep((long) (400 + Math.random() * 220));
         } catch (InterruptedException e) {
@@ -660,9 +658,9 @@ kubectl apply -f siege.yaml
 * 부하테스터 siege 툴을 통한 서킷 브레이커 동작 확인: 동시사용자 40명 30초 동안 실시
 ```
 kubectl exec -it pod/siege -c siege -- /bin/bash
-siege -c40 -t30S  -v --content-type "application/json" 'http://10.0.118.176:8080/coupons POST {"memuId":2, "quantity":1}'
+siege -c30 -t20S  -v --content-type "application/json" 'http://Delivery:8080/deliveries POST {"memuId":2, "quantity":1}'
 ```
-![image](https://user-images.githubusercontent.com/78134499/109973561-e432a980-7d3b-11eb-8d39-a1a8d2e30af9.png)
+![image](https://user-images.githubusercontent.com/78134499/110056919-fac01b80-7da2-11eb-9529-f6097ca3c2fe.png)
 
 
 ## 오토스케일 아웃
