@@ -416,7 +416,7 @@ kubectl -n kafka exec -ti my-kafka-0 -- /usr/bin/kafka-console-consumer --bootst
 
 * 소스 가져오기
 ```
-git clone https://github.com/bigot93/forthcafe.git
+git clone https://github.com/753879/forthcafeCoupon.git
 ```
 
 ## ConfigMap
