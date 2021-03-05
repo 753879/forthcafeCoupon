@@ -575,7 +575,7 @@ kubectl logs {pod명}
 * Hystrix 를 설정: 요청처리 쓰레드에서 처리시간이 610 밀리가 넘어서기 시작하여 어느정도 유지되면 CB 회로가 닫히도록 (요청을 빠르게 실패처리, 차단) 설정
 
 ```
-// Delivery서비스 application.yml
+// Coupon application.yml
 
 feign:
   hystrix:
@@ -628,8 +628,7 @@ kubectl apply -f siege.yaml
 * 부하테스터 siege 툴을 통한 서킷 브레이커 동작 확인: 동시사용자 40명 30초 동안 실시
 ```
 kubectl exec -it pod/siege -c siege -- /bin/bash
-siege -c40 -t30S  -v --content-type "application/json" 'http://52.231.74.4:8080/coupons POST {"memuId":2, "quantity":1}'
-siege -c40 -t10S  -v --content-type "application/json" 'http://Delivery:8080 POST {"memuId":2, "quantity":1}'  -- 안됨
+siege -c40 -t30S  -v --content-type "application/json" 'http://10.0.118.176:8080/coupons POST {"memuId":2, "quantity":1}'
 ```
 ![image](https://user-images.githubusercontent.com/78134499/109973561-e432a980-7d3b-11eb-8d39-a1a8d2e30af9.png)
 
@@ -653,7 +652,7 @@ kubectl apply -f kubernetes/deployment.yml
 kubectl expose deploy coupon --type=ClusterIP --port=8080
 ```
 
-* Order 서비스에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 CPU 사용량이 15프로를 넘어서면 replica 를 10개까지 늘려준다
+* Coupon 서비스에 대한 replica 를 동적으로 늘려주도록 HPA 를 설정한다. 설정은 CPU 사용량이 15프로를 넘어서면 replica 를 5개까지 늘려준다
 
 ```
 kubectl autoscale deploy coupon --min=1 --max=5 --cpu-percent=15
@@ -679,8 +678,7 @@ spec:
 * siege를 활용해서 워크로드를 1000명, 1분간 걸어준다. (Cloud 내 siege pod에서 부하줄 것)
 ```
 kubectl exec -it pod/siege -c siege -- /bin/bash
-siege -c1000 -t60S  -v --content-type "application/json" 'http://{EXTERNAL-IP}:8080/orders POST {"memuId":2, "quantity":1}'
-siege -c300 -t60S  -v --content-type "application/json" 'http://52.231.74.4:8080/coupons POST {"memuId":2, "quantity":1}'
+siege -c300 -t60S  -v --content-type "application/json" 'http://10.0.118.176:8080/coupons POST {"memuId":2, "quantity":1}'
 ```
 
 * 오토스케일이 어떻게 되고 있는지 모니터링을 걸어둔다
@@ -699,6 +697,42 @@ kubectl get pod
 
 
 ## 무정지 재배포 (Readiness Probe)
+
+* coupon서비스의 deployment.yml 설정
+```
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coupon
+  template:
+    metadata:
+      labels:
+        app: coupon
+    spec:
+      containers:
+        - name: coupon
+          image: skuser03.azurecr.io/coupon:v4
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8089
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5
+ ```
+ 
 * 배포전
 
 ![image](https://user-images.githubusercontent.com/5147735/109743733-89526280-7c14-11eb-93da-0ddd3cd18e22.png)
@@ -713,10 +747,8 @@ kubectl get pod
 ![image](https://user-images.githubusercontent.com/5147735/109744225-45139200-7c15-11eb-8efa-07ac40162ded.png)
 
 
-
-
 ## Self-healing (Liveness Probe)
-* order 서비스 deployment.yml   livenessProbe 설정을 port 8089로 변경 후 배포 하여 liveness probe 가 동작함을 확인 
+* coupon 서비스 deployment.yml   livenessProbe 설정을 port 8089로 변경 후 배포 하여 liveness probe 가 동작함을 확인 
 ```
     livenessProbe:
       httpGet:
@@ -725,9 +757,8 @@ kubectl get pod
       initialDelaySeconds: 5
       periodSeconds: 5
 ```
+![image](https://user-images.githubusercontent.com/78134499/110048874-13750500-7d94-11eb-8c8f-32c57f635982.png)
 
-![image](https://user-images.githubusercontent.com/5147735/109740864-4fcb2880-7c0f-11eb-86ad-2aabb0197881.png)
-![image](https://user-images.githubusercontent.com/5147735/109742082-c0734480-7c11-11eb-9a57-f6dd6961a6d2.png)
 
 
 
