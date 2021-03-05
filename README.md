@@ -727,7 +727,7 @@ spec:
             httpGet:
               path: '/actuator/health'
               port: 8089
-            initialDelaySeconds: 120
+            initialDelaySeconds: 5
             timeoutSeconds: 2
             periodSeconds: 5
             failureThreshold: 5
@@ -757,7 +757,8 @@ spec:
       initialDelaySeconds: 5
       periodSeconds: 5
 ```
-![image](https://user-images.githubusercontent.com/78134499/110048874-13750500-7d94-11eb-8c8f-32c57f635982.png)
+![image](https://user-images.githubusercontent.com/78134499/110053368-9f8b2a80-7d9c-11eb-857a-dfce417111b2.png)
+
 
 
 
