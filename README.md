@@ -11,7 +11,7 @@
    1. 주문내역이 배송되면 쿠폰을 저장한다. → Sync 호출
 2. 장애격리
    1. 쿠폰에서 장애가 발송해도 주문취소는 24시간 받을 수 있어야 한다 → Async(event-driven), Eventual Consistency
-   1. 쿠폰서비스가 과중되면 쿠폰저장g 잠시 후에 하도록 유도한다 → Circuit breaker, fallback
+   1. 쿠폰서비스가 과중되면 쿠폰저장을 잠시 후에 하도록 유도한다 → Circuit breaker, fallback
 3. 성능
    1. 고객이 쿠폰내역을 화면에서 확인할 수 있어야 한다 → CQRS
 
