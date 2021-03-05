@@ -288,7 +288,7 @@ server:
   port: 8080
 ```
 
-8088 port로 Order서비스 정상 호출
+8088 port로 Coupon서비스 정상 호출
 
 ![image](https://user-images.githubusercontent.com/78134499/109924486-b3368280-7d03-11eb-811d-aa4304aa6b86.png)
 
