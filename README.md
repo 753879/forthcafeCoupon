@@ -379,7 +379,6 @@ Fallback 설정
 * 카프카 설치
 ```
 - 헬름 설치
-참고 : http://msaschool.io/operation/implementation/implementation-seven/
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
 chmod 700 get_helm.sh
 ./get_helm.sh
@@ -388,7 +387,7 @@ chmod 700 get_helm.sh
 kubectl patch storageclass managed -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 
 - 카프카 설치
-kubectl --namespace kube-system create sa tiller      # helm 의 설치관리자를 위한 시스템 사용자 생성
+kubectl --namespace kube-system create sa tiller      
 kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
 
 helm repo add incubator https://charts.helm.sh/incubator
