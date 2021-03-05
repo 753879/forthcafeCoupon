@@ -37,7 +37,6 @@ logging:
     org.springframework.cloud: debug
 server:
   port: 8085
----
 
 spring:
   profiles: docker
@@ -62,8 +61,6 @@ spring:
         event-out:
           destination: forthcafe
           contentType: application/json
-
-
 
 
 

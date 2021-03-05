@@ -22,10 +22,24 @@ public class Coupon {
 
     @PrePersist
     public void onPrePersist(){
+                // configMap 설정
+        String sysEnv = System.getenv("SYS_MODE");
+        if(sysEnv == null) sysEnv = "LOCAL";
+        System.out.println("################## SYSTEM MODE: " + sysEnv);
+
         CouponSaved couponSaved = new CouponSaved();
         BeanUtils.copyProperties(this, couponSaved);
         couponSaved.publishAfterCommit();
+
+                // delay test시 주석해제
+        try {
+                Thread.currentThread().sleep((long) (400 + Math.random() * 220));
+        } catch (InterruptedException e) {
+                e.printStackTrace();
+        }
+
     }
+
 
     @PostUpdate
     public void onPostUpdate(){

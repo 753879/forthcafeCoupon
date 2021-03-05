@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: order
-          image: skuser03.azurecr.io/order:v1
+          image: skuser03.azurecr.io/order:v2
           ports:
             - containerPort: 8080
           # autoscale start
