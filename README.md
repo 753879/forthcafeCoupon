@@ -362,7 +362,7 @@ public interface CouponService {
 Delivery 서비스 변화 없음
 ![image](https://user-images.githubusercontent.com/78134499/109933647-019d4e80-7d0f-11eb-8711-33c8a34b9cc2.png)
 
-Delivery 서비스 재기동 
+ Coupon 서비스 재기동 
 ![image](https://user-images.githubusercontent.com/78134499/109933669-0a8e2000-7d0f-11eb-9425-bdd6f7d258f5.png)
 
 Delivery 서비스에 정상 요청이 됨
