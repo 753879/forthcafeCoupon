@@ -419,48 +419,6 @@ kubectl -n kafka exec -ti my-kafka-0 -- /usr/bin/kafka-console-consumer --bootst
 git clone https://github.com/753879/forthcafeCoupon.git
 ```
 
-## ConfigMap
-* deployment.yml 파일에 설정
-```
-env:
-   - name: SYS_MODE
-     valueFrom:
-       configMapKeyRef:
-         name: systemmode
-         key: sysmode
-```
-
-* Coupon.java 파일에 설정
-```
-    @PrePersist
-    public void onPrePersist(){
-                // configMap 설정
-        String sysEnv = System.getenv("SYS_MODE");
-        if(sysEnv == null) sysEnv = "LOCAL";
-        System.out.println("################## SYSTEM MODE: " + sysEnv);
-
-        CouponSaved couponSaved = new CouponSaved();
-        BeanUtils.copyProperties(this, couponSaved);
-        couponSaved.publishAfterCommit();
-```
-
-* Configmap 생성, 정보 확인
-```
-kubectl create configmap systemmode --from-literal=sysmode=PRODUCT
-kubectl get configmap systemmode -o yaml
-```
-
-![image](https://user-images.githubusercontent.com/78134499/109965068-cfe9af00-7d31-11eb-841a-6cf4317ce8c6.png)
-
-
-* order 1건 추가후 로그 확인
-```
-kubectl logs {pod ID} 
-```
-![image](https://user-images.githubusercontent.com/78134499/110054410-618f0600-7d9e-11eb-90d2-bbf4ddb33688.png)
-
-
-
 ## Deploy / Pipeline
 
 * build 하기
@@ -573,15 +531,46 @@ kubectl logs {pod명}
 
 ![image](https://user-images.githubusercontent.com/78134499/109949528-cf93e880-7d1e-11eb-8068-b75dd4e53c42.png)
 
-* deployment.yml  참고
+
+## ConfigMap
+* deployment.yml 파일에 설정
 ```
-1. image 설정
-2. env 설정 (config Map) 
-3. readiness 설정 (무정지 배포)
-4. liveness 설정 (self-healing)
-5. resource 설정 (autoscaling)
+env:
+   - name: SYS_MODE
+     valueFrom:
+       configMapKeyRef:
+         name: systemmode
+         key: sysmode
 ```
-![image](https://user-images.githubusercontent.com/78134499/109967620-fd842780-7d34-11eb-9e26-0d7e97464f9f.png)
+
+* Coupon.java 파일에 설정
+```
+    @PrePersist
+    public void onPrePersist(){
+                // configMap 설정
+        String sysEnv = System.getenv("SYS_MODE");
+        if(sysEnv == null) sysEnv = "LOCAL";
+        System.out.println("################## SYSTEM MODE: " + sysEnv);
+
+        CouponSaved couponSaved = new CouponSaved();
+        BeanUtils.copyProperties(this, couponSaved);
+        couponSaved.publishAfterCommit();
+```
+
+* Configmap 생성, 정보 확인
+```
+kubectl create configmap systemmode --from-literal=sysmode=PRODUCT
+kubectl get configmap systemmode -o yaml
+```
+
+![image](https://user-images.githubusercontent.com/78134499/109965068-cfe9af00-7d31-11eb-841a-6cf4317ce8c6.png)
+
+
+* order 1건 추가후 로그 확인
+```
+kubectl logs {pod ID} 
+```
+![image](https://user-images.githubusercontent.com/78134499/110054410-618f0600-7d9e-11eb-90d2-bbf4ddb33688.png)
 
 
 ## 서킷 브레이킹
@@ -644,6 +633,16 @@ kubectl exec -it pod/siege -c siege -- /bin/bash
 siege -c30 -t20S  -v --content-type "application/json" 'http://Delivery:8080/deliveries POST {"memuId":2, "quantity":1}'
 ```
 ![image](https://user-images.githubusercontent.com/78134499/110056919-fac01b80-7da2-11eb-9529-f6097ca3c2fe.png)
+
+* deployment.yml  참고
+```
+1. image 설정
+2. env 설정 (config Map) 
+3. readiness 설정 (무정지 배포)
+4. liveness 설정 (self-healing)
+5. resource 설정 (autoscaling)
+```
+![image](https://user-images.githubusercontent.com/78134499/109967620-fd842780-7d34-11eb-9e26-0d7e97464f9f.png)
 
 
 ## 오토스케일 아웃
