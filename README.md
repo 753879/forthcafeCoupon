@@ -690,7 +690,7 @@ spec:
 * siege를 활용해서 워크로드를 300명, 1분간 걸어준다. (Cloud 내 siege pod에서 부하줄 것)
 ```
 kubectl exec -it pod/siege -c siege -- /bin/bash
-siege -c300 -t60S  -v --content-type "application/json" 'http://10.0.118.176:8080/coupons POST {"memuId":2, "quantity":1}'
+siege -c300 -t60S  -v --content-type "application/json" 'http://Coupon:8080/coupons POST {"memuId":2, "quantity":1}'
 ```
 
 * 오토스케일이 어떻게 되고 있는지 모니터링을 걸어둔다
