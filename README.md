@@ -446,6 +446,21 @@ env:
          name: systemmode
          key: sysmode
 ```
+
+* Coupon.java 파일에 설정
+```
+    @PrePersist
+    public void onPrePersist(){
+                // configMap 설정
+        String sysEnv = System.getenv("SYS_MODE");
+        if(sysEnv == null) sysEnv = "LOCAL";
+        System.out.println("################## SYSTEM MODE: " + sysEnv);
+
+        CouponSaved couponSaved = new CouponSaved();
+        BeanUtils.copyProperties(this, couponSaved);
+        couponSaved.publishAfterCommit();
+```
+
 * Configmap 생성, 정보 확인
 ```
 kubectl create configmap systemmode --from-literal=sysmode=PRODUCT
@@ -457,9 +472,10 @@ kubectl get configmap systemmode -o yaml
 
 * order 1건 추가후 로그 확인
 ```
-kubectl logs {pod ID} --확인필요
+kubectl logs {pod ID} 
 ```
-![image](https://user-images.githubusercontent.com/5147735/109760887-dc3b1280-7c32-11eb-8284-f4544d7b72b0.png)
+![image](https://user-images.githubusercontent.com/78134499/110054410-618f0600-7d9e-11eb-90d2-bbf4ddb33688.png)
+
 
 
 ## Deploy / Pipeline
@@ -743,24 +759,21 @@ spec:
             httpGet:
               path: '/actuator/health'
               port: 8089
-            initialDelaySeconds: 5
+            initialDelaySeconds: 120
             timeoutSeconds: 2
             periodSeconds: 5
             failureThreshold: 5
  ```
  
-* 배포전
+* 배포진행
 
-![image](https://user-images.githubusercontent.com/5147735/109743733-89526280-7c14-11eb-93da-0ddd3cd18e22.png)
+![image](https://user-images.githubusercontent.com/78134499/110055629-ac118200-7da0-11eb-9304-69c8b42ee00e.png)
 
-* 배포중
 
-![image](https://user-images.githubusercontent.com/5147735/109744076-11386c80-7c15-11eb-849d-6cf4e2c72675.png)
-![image](https://user-images.githubusercontent.com/5147735/109744186-3a58fd00-7c15-11eb-8da3-f11b6194fc6b.png)
+* Siege 결과 Availability가 100% 확인
 
-* 배포후
+![image](https://user-images.githubusercontent.com/78134499/110055368-30173a00-7da0-11eb-99c8-77c08fe8b693.png)
 
-![image](https://user-images.githubusercontent.com/5147735/109744225-45139200-7c15-11eb-8efa-07ac40162ded.png)
 
 
 ## Self-healing (Liveness Probe)
